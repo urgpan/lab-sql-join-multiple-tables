@@ -50,10 +50,46 @@
     group by f.title
     order by count(r.rental_id) desc;
 
--- List the top five genres in gross revenue in descending order.
+
+#List the top five genres in gross revenue in descending order.
+
+	select c.name, sum(p.amount) AS total_amount
+	from sakila.category as c
+		join sakila.film_category as f
+			on c.category_id = f.category_id
+		join sakila.rental as r
+			on f.film_id = r.rental_id
+		join sakila.payment as p
+			on r.rental_id = p.rental_id
+	group by c.category_id
+	ORDER BY total_amount desc
+	LIMIT 5;
+    
+    #Table cat film_id > invent(inv_id) > rental (rental_id) > Payment(rental_id)
+	select c.name, sum(p.amount) AS total_amount
+	from sakila.category AS c
+		join sakila.film_category AS f
+			on c.category_id = f.category_id
+		join sakila.inventory AS i
+			on f.film_id = i.film_id
+		join sakila.rental AS r
+			on i.inventory_id = r.inventory_id
+		join sakila.payment as p
+			on r.rental_id = p.rental_id
+	group by c.category_id
+	ORDER BY total_amount desc
+	LIMIT 5;
+    
+#Is "Academy Dinosaur" available for rent from Store 1? NO
+	SELECT f.title, r.rental_date, r.return_date, store_id
+	from sakila.rental as r
+		join sakila.inventory as i
+			on r.inventory_id = i.inventory_id
+		join sakila.film as f
+			on f.film_id = i.film_id
+	WHERE f.title = "Academy Dinosaur" and return_date is NULL and store_id = 1;
 
 
--- Is "Academy Dinosaur" available for rent from Store 1?
 
 
 
